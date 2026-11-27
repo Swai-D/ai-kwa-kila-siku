@@ -1,0 +1,6 @@
+<% if (result.pages > 1) { %>
+							<ul class="actions pagination">
+								<li><% if (result.page > 1) { %><a href="<%= pageUrl(result.page - 1) %>" class="button large previous"><%= t('pagination.prev') %></a><% } else { %><span class="disabled button large previous"><%= t('pagination.prev') %></span><% } %></li>
+								<li><% if (result.page < result.pages) { %><a href="<%= pageUrl(result.page + 1) %>" class="button large next"><%= t('pagination.next') %></a><% } else { %><span class="disabled button large next"><%= t('pagination.next') %></span><% } %></li>
+							</ul>
+<% } %>

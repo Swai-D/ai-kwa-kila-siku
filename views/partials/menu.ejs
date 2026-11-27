@@ -1,0 +1,29 @@
+				<!-- Menu -->
+					<section id="menu">
+
+						<section>
+							<form class="search" method="get" action="/<%= lang %>/search">
+								<input type="text" name="q" placeholder="<%= t('search.placeholder') %>" />
+							</form>
+						</section>
+
+						<section>
+							<ul class="links">
+								<% categories.forEach(function (c) { %>
+								<li>
+									<a href="/<%= lang %>/category/<%= c.slug %>">
+										<h3><%= c.name %></h3>
+										<p><%= c.description %></p>
+									</a>
+								</li>
+								<% }); %>
+							</ul>
+						</section>
+
+						<section>
+							<ul class="actions stacked">
+								<li><a href="<%= altPaths[otherLang] || '/' + otherLang + '/' %>" class="button large fit"><%= t('menu.switch_language') %></a></li>
+							</ul>
+						</section>
+
+					</section>

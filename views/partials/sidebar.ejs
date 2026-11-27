@@ -1,0 +1,69 @@
+				<!-- Sidebar -->
+					<section id="sidebar">
+
+						<section id="intro">
+							<a href="/<%= lang %>/" class="logo"><img src="<%= site.logo %>" alt="" /></a>
+							<header>
+								<h2><%= site.name %></h2>
+								<p><%= t('tagline') %></p>
+							</header>
+						</section>
+
+						<% if (sidebar.mini.length) { %>
+						<section>
+							<div class="mini-posts">
+								<% sidebar.mini.forEach(function (p) { %>
+								<article class="mini-post">
+									<header>
+										<h3><a href="/<%= lang %>/post/<%= p.slug %>"><%= p.title %></a></h3>
+										<time class="published" datetime="<%= isoDate(p.published_at) %>"><%= fmtDate(p.published_at) %></time>
+										<a href="/<%= lang %>/about" class="author"><img src="<%= site.authorAvatar %>" alt="<%= site.authorName %>" /></a>
+									</header>
+									<% if (p.cover_image) { %><a href="/<%= lang %>/post/<%= p.slug %>" class="image"><img src="<%= p.cover_image %>" alt="" /></a><% } %>
+								</article>
+								<% }); %>
+							</div>
+						</section>
+						<% } %>
+
+						<% if (sidebar.popular.length) { %>
+						<section>
+							<ul class="posts">
+								<% sidebar.popular.forEach(function (p) { %>
+								<li>
+									<article>
+										<header>
+											<h3><a href="/<%= lang %>/post/<%= p.slug %>"><%= p.title %></a></h3>
+											<time class="published" datetime="<%= isoDate(p.published_at) %>"><%= fmtDate(p.published_at) %></time>
+										</header>
+										<% if (p.cover_image) { %><a href="/<%= lang %>/post/<%= p.slug %>" class="image"><img src="<%= p.cover_image %>" alt="" /></a><% } %>
+									</article>
+								</li>
+								<% }); %>
+							</ul>
+						</section>
+						<% } %>
+
+						<section class="blurb">
+							<h2><%= t('sidebar.about_title') %></h2>
+							<p><%= t('sidebar.about_text') %></p>
+							<ul class="actions">
+								<li><a href="/<%= lang %>/about" class="button"><%= t('sidebar.learn_more') %></a></li>
+							</ul>
+						</section>
+
+						<section class="blurb" id="subscribe">
+							<h2><%= t('subscribe.title') %></h2>
+							<% if (flash === 'ok') { %><p class="flash ok"><%= t('subscribe.ok') %></p><% } %>
+							<% if (flash === 'invalid') { %><p class="flash error"><%= t('subscribe.invalid') %></p><% } %>
+							<form method="post" action="/<%= lang %>/subscribe">
+								<input type="email" name="email" placeholder="<%= t('subscribe.placeholder') %>" required maxlength="254" />
+								<ul class="actions">
+									<li><input type="submit" value="<%= t('subscribe.button') %>" /></li>
+								</ul>
+							</form>
+						</section>
+
+						<%- include('footer') %>
+
+					</section>
