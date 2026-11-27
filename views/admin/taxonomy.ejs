@@ -1,0 +1,80 @@
+<%- include('partials/top', { title: cfg.title }) %>
+                        <% if (errors.length) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Could not save:</strong>
+                            <ul class="mb-0 mt-1"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+                        </div>
+                        <% } %>
+                        <div class="row">
+                            <div class="col-lg-7">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <% if (!rows.length) { %>
+                                        <p class="text-muted mb-0">No <%= cfg.title.toLowerCase() %> yet. Add the first one on the right.</p>
+                                        <% } else { %>
+                                        <div class="table-responsive">
+                                            <table class="table align-middle mb-0">
+                                                <thead><tr><th>Kiswahili</th><th>English</th><th>Slug</th><th class="text-end">Posts</th><th class="text-end">Actions</th></tr></thead>
+                                                <tbody>
+                                                <% rows.forEach(function (r) { %>
+                                                    <tr>
+                                                        <td class="fw-medium"><%= r.name_sw %></td>
+                                                        <td><%= r.name_en %></td>
+                                                        <td class="text-muted"><%= r.slug %></td>
+                                                        <td class="text-end"><%= r.posts %></td>
+                                                        <td class="text-end text-nowrap">
+                                                            <a href="/admin/<%= cfg.path %>?edit=<%= r.id %>" class="btn btn-sm btn-soft-primary" title="Edit"><i class="mdi mdi-pencil"></i></a>
+                                                            <form method="post" action="/admin/<%= cfg.path %>/<%= r.id %>/delete" class="d-inline js-confirm-delete" data-what="<%= cfg.singular %>" data-title="<%= r.name_en %>" data-note="<%= cfg.deleteNote %>">
+                                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                                                <button type="submit" class="btn btn-sm btn-soft-danger" title="Delete"><i class="mdi mdi-delete"></i></button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title mb-0"><%= form.id ? 'Edit ' + cfg.singular : 'Add ' + cfg.singular %></h5>
+                                        <% if (form.id) { %><a href="/admin/<%= cfg.path %>" class="btn btn-sm btn-light">Cancel</a><% } %>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="post" action="/admin/<%= cfg.path %><%= form.id ? '/' + form.id : '' %>" class="js-tax-form" novalidate>
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                            <div class="mb-3">
+                                                <label class="form-label" for="name_sw">Name (Kiswahili)</label>
+                                                <input type="text" class="form-control" id="name_sw" name="name_sw" maxlength="80" value="<%= form.name_sw %>" />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="name_en">Name (English)</label>
+                                                <input type="text" class="form-control" id="name_en" name="name_en" maxlength="80" value="<%= form.name_en %>" />
+                                                <div class="form-text">Fill one or both. An empty one copies the other.</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="tax_slug">Slug</label>
+                                                <input type="text" class="form-control" id="tax_slug" name="slug" maxlength="80" value="<%= form.slug %>" placeholder="auto from name" />
+                                            </div>
+                                            <% if (cfg.hasDesc) { %>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="desc_sw">Description (Kiswahili)</label>
+                                                <input type="text" class="form-control" id="desc_sw" name="desc_sw" maxlength="160" value="<%= form.desc_sw %>" />
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="desc_en">Description (English)</label>
+                                                <input type="text" class="form-control" id="desc_en" name="desc_en" maxlength="160" value="<%= form.desc_en %>" />
+                                                <div class="form-text">Shown in the blog menu.</div>
+                                            </div>
+                                            <% } %>
+                                            <button type="submit" class="btn btn-primary"><i class="mdi mdi-content-save me-1"></i> <%= form.id ? 'Save changes' : 'Add ' + cfg.singular %></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+<%- include('partials/bottom') %>

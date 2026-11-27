@@ -15,11 +15,5 @@ module.exports = {
     authorName: 'Davy Swai',
     authorAvatar: '/images/avatar.jpg',
     logo: '/images/logo.jpg',
-    social: {
-      twitter: '#',
-      facebook: '#',
-      instagram: '#',
-      email: 'mailto:hello@example.com',
-    },
   },
 };

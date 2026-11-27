@@ -22,7 +22,7 @@
                                             <td>
                                                 <a href="/admin/posts/<%= p.id %>/edit" class="btn btn-sm btn-soft-primary" title="Edit"><i class="mdi mdi-pencil"></i></a>
                                                 <% if (p.state === 'published') { %><a href="<%= viewSlug %>" target="_blank" rel="noopener" class="btn btn-sm btn-soft-secondary" title="View on blog"><i class="mdi mdi-open-in-new"></i></a><% } %>
-                                                <form method="post" action="/admin/posts/<%= p.id %>/delete" class="d-inline js-confirm-delete" data-title="<%= p.title_sw || p.title_en %>">
+                                                <form method="post" action="/admin/posts/<%= p.id %>/delete" class="d-inline js-confirm-delete" data-what="post" data-note="Both language versions will be removed." data-title="<%= p.title_sw || p.title_en %>">
                                                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                                                     <button type="submit" class="btn btn-sm btn-soft-danger" title="Delete"><i class="mdi mdi-delete"></i></button>
                                                 </form>
