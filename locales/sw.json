@@ -34,5 +34,9 @@
   "footer.design": "Muundo",
   "error.404_title": "Ukurasa haupatikani",
   "error.404_text": "Samahani, ukurasa unaoutafuta haupo.",
-  "error.back_home": "Rudi mwanzo"
+  "error.back_home": "Rudi mwanzo",
+  "subscribe.slow": "Umejaribu mara nyingi. Jaribu tena baadaye.",
+  "share.title": "Shiriki makala hii",
+  "share.copy": "Nakili kiungo",
+  "share.copied": "Imenakiliwa!"
 }

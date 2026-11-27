@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const config = require('./config');
 const publicRoutes = require('./routes/public');
 const adminRoutes = require('./routes/admin');
+const seoRoutes = require('./routes/seo');
 const { pickFromAcceptLanguage } = require('./i18n');
 
 const app = express();
@@ -43,6 +44,8 @@ app.use('/uploads', express.static(config.uploadDir, { maxAge: '30d' }));
 
 // Admin dashboard (has its own, larger body parser and CSRF protection).
 app.use('/admin', adminRoutes);
+
+app.use(seoRoutes);
 
 app.use(express.urlencoded({ extended: false, limit: '10kb' }));
 

@@ -12,7 +12,7 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
-                                                <span class="text-muted mb-3 lh-1 d-block text-truncate"><%= c[0] %></span>
+                                                <span class="text-muted mb-3 lh-1 d-block text-truncate"><% if (c[0] === 'Subscribers') { %><a href="/admin/subscribers" class="text-muted"><%= c[0] %></a><% } else { %><%= c[0] %><% } %></span>
                                                 <h4 class="mb-0"><%= c[1] %></h4>
                                             </div>
                                             <div class="flex-shrink-0">

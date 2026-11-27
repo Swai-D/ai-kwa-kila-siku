@@ -56,8 +56,10 @@
 							<h2><%= t('subscribe.title') %></h2>
 							<% if (flash === 'ok') { %><p class="flash ok"><%= t('subscribe.ok') %></p><% } %>
 							<% if (flash === 'invalid') { %><p class="flash error"><%= t('subscribe.invalid') %></p><% } %>
+							<% if (flash === 'slow') { %><p class="flash error"><%= t('subscribe.slow') %></p><% } %>
 							<form method="post" action="/<%= lang %>/subscribe">
 								<input type="email" name="email" placeholder="<%= t('subscribe.placeholder') %>" required maxlength="254" />
+								<input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
 								<ul class="actions">
 									<li><input type="submit" value="<%= t('subscribe.button') %>" /></li>
 								</ul>

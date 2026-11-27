@@ -143,6 +143,39 @@ router.post('/media/:id/delete', (req, res, next) => {
   res.redirect(303, '/admin/media?ok=deleted');
 });
 
+// --- subscribers -----------------------------------------------------------------
+router.get('/subscribers', (req, res) => {
+  const rows = db.prepare('SELECT id, email, lang, created_at FROM subscribers ORDER BY id DESC').all();
+  res.render('admin/subscribers', {
+    nav: 'subscribers',
+    rows,
+    counts: { all: rows.length, sw: rows.filter((r) => r.lang === 'sw').length, en: rows.filter((r) => r.lang === 'en').length },
+  });
+});
+
+// Spreadsheet apps run cells that start with = + - @ as formulas; prefix those with an apostrophe.
+const csvCell = (v) => {
+  let s = String(v);
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+  return `"${s.replace(/"/g, '""')}"`;
+};
+
+router.get('/subscribers.csv', (req, res) => {
+  const rows = db.prepare('SELECT email, lang, created_at FROM subscribers ORDER BY id').all();
+  const lines = ['email,language,subscribed_at_utc', ...rows.map((r) => [r.email, r.lang, r.created_at].map(csvCell).join(','))];
+  res
+    .type('text/csv; charset=utf-8')
+    .set('Content-Disposition', `attachment; filename="subscribers-${new Date().toISOString().slice(0, 10)}.csv"`)
+    .send('\uFEFF' + lines.join('\r\n') + '\r\n');
+});
+
+router.post('/subscribers/:id/delete', (req, res, next) => {
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isInteger(id)) return next();
+  db.prepare('DELETE FROM subscribers WHERE id = ?').run(id);
+  res.redirect(303, '/admin/subscribers?ok=deleted');
+});
+
 // --- settings ------------------------------------------------------------------
 const imageOk = (v) => v === '' || /^\/(uploads|images)\/[\w.-]+$/.test(v);
 const urlOk = (v) => v === '' || /^https?:\/\/[^\s<>"']+$/.test(v);
