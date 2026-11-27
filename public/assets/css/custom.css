@@ -1,0 +1,18 @@
+/* Project-specific tweaks on top of Future Imperfect */
+#header .main ul li.lang > a.lang-switch {
+	text-indent: 0;
+	text-align: center;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	font-size: 0.75em;
+	color: #aaaaaa;
+}
+#header .main ul li.lang > a.lang-switch:before { content: none; display: none; }
+#header .main ul li.lang > a.lang-switch:hover { color: #3d4449; }
+.pagination .disabled { opacity: 0.4; cursor: default; }
+.flash { font-weight: 600; margin-bottom: 1em; }
+.flash.ok { color: #2e7d32; }
+.flash.error { color: #c62828; }
+.post img { max-width: 100%; height: auto; }
+.post pre { overflow-x: auto; }
+.stats .icon:before { margin-right: 0.35em; }

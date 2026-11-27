@@ -1,0 +1,23 @@
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="/<%= lang %>/post/<%= post.slug %>"><%= post.title %></a></h2>
+										<% if (post.excerpt) { %><p><%= post.excerpt %></p><% } %>
+									</div>
+									<div class="meta">
+										<time class="published" datetime="<%= isoDate(post.published_at) %>"><%= fmtDate(post.published_at) %></time>
+										<a href="/<%= lang %>/about" class="author"><span class="name"><%= site.authorName %></span><img src="<%= site.authorAvatar %>" alt="" /></a>
+									</div>
+								</header>
+								<% if (post.cover_image) { %><a href="/<%= lang %>/post/<%= post.slug %>" class="image featured"><img src="<%= post.cover_image %>" alt="<%= post.title %>" /></a><% } %>
+								<footer>
+									<ul class="actions">
+										<li><a href="/<%= lang %>/post/<%= post.slug %>" class="button large"><%= t('post.continue') %></a></li>
+									</ul>
+									<ul class="stats">
+										<% if (post.category_slug) { %><li><a href="/<%= lang %>/category/<%= post.category_slug %>"><%= post.category_name %></a></li><% } %>
+										<li><span class="icon solid fa-clock"><%= readingMinutes(post.body) %></span></li>
+										<li><span class="icon solid fa-eye"><%= post.views %></span></li>
+									</ul>
+								</footer>
+							</article>

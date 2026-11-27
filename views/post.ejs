@@ -1,0 +1,25 @@
+<%- include('partials/top') %>
+						<article class="post">
+							<header>
+								<div class="title">
+									<h2><%= post.title %></h2>
+									<% if (post.excerpt) { %><p><%= post.excerpt %></p><% } %>
+								</div>
+								<div class="meta">
+									<time class="published" datetime="<%= isoDate(post.published_at) %>"><%= fmtDate(post.published_at) %></time>
+									<a href="/<%= lang %>/about" class="author"><span class="name"><%= site.authorName %></span><img src="<%= site.authorAvatar %>" alt="" /></a>
+								</div>
+							</header>
+							<% if (post.cover_image) { %><span class="image featured"><img src="<%= post.cover_image %>" alt="<%= post.title %>" /></span><% } %>
+							<%- post.body %>
+							<% if (!altPaths[otherLang]) { %><p><em><%= t('post.not_translated') %></em></p><% } %>
+							<footer>
+								<ul class="stats">
+									<% if (post.category_slug) { %><li><a href="/<%= lang %>/category/<%= post.category_slug %>"><%= post.category_name %></a></li><% } %>
+									<% tags.forEach(function (tg) { %><li><a href="/<%= lang %>/tag/<%= tg.slug %>">#<%= tg.name %></a></li><% }); %>
+									<li><span class="icon solid fa-clock"><%= readingMinutes(post.body) %> <%= t('post.minutes') %></span></li>
+									<li><span class="icon solid fa-eye"><%= post.views %></span></li>
+								</ul>
+							</footer>
+						</article>
+<%- include('partials/bottom') %>

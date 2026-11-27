@@ -1,0 +1,39 @@
+<%
+  const title = pageTitle ? `${pageTitle} | ${site.name}` : `${site.name} — ${t('tagline')}`;
+  const abs = (p) => siteUrl + p;
+%><!DOCTYPE HTML>
+<!--
+	Based on Future Imperfect by HTML5 UP (html5up.net | @ajlkn), CCA 3.0.
+-->
+<html lang="<%= lang %>">
+	<head>
+		<title><%= title %></title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="<%= metaDescription %>" />
+		<% if (typeof noindex !== 'undefined' && noindex) { %><meta name="robots" content="noindex,follow" /><% } %>
+		<link rel="canonical" href="<%= abs(canonicalPath) %>" />
+		<% ['sw','en'].forEach(function (l) { if (altPaths[l]) { %>
+		<link rel="alternate" hreflang="<%= l %>" href="<%= abs(altPaths[l]) %>" />
+		<% } }); %>
+		<% if (altPaths.sw) { %><link rel="alternate" hreflang="x-default" href="<%= abs(altPaths.sw) %>" /><% } %>
+		<meta property="og:site_name" content="<%= site.name %>" />
+		<meta property="og:type" content="<%= ogType %>" />
+		<meta property="og:title" content="<%= pageTitle || site.name %>" />
+		<meta property="og:description" content="<%= metaDescription %>" />
+		<meta property="og:url" content="<%= abs(canonicalPath) %>" />
+		<meta property="og:locale" content="<%= lang === 'sw' ? 'sw_TZ' : 'en_GB' %>" />
+		<% if (ogImage) { %><meta property="og:image" content="<%= abs(ogImage) %>" /><% } %>
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<link rel="stylesheet" href="/assets/css/custom.css" />
+	</head>
+	<body class="<%= bodyClass %> is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<%- include('header') %>
+				<%- include('menu') %>
+
+				<!-- Main -->
+					<div id="main">
