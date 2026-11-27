@@ -5,9 +5,12 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const config = require('./config');
 const publicRoutes = require('./routes/public');
+const adminRoutes = require('./routes/admin');
 const { pickFromAcceptLanguage } = require('./i18n');
 
 const app = express();
+// HSTS and "upgrade-insecure-requests" only make sense (and only work) when the site is served over HTTPS.
+const isHttps = config.siteUrl.startsWith('https://');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
@@ -16,10 +19,14 @@ app.disable('x-powered-by');
 
 app.use(
   helmet({
+    hsts: isHttps,
+    // "no-referrer" makes browsers send `Origin: null` on form posts, which the admin CSRF check rejects.
+    referrerPolicy: { policy: 'same-origin' },
     contentSecurityPolicy: {
       directives: {
+        upgradeInsecureRequests: isHttps ? [] : null,
         defaultSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:'],
+        imgSrc: ["'self'", 'data:', 'blob:'],
         scriptSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         fontSrc: ["'self'", 'data:'],
@@ -31,8 +38,13 @@ app.use(
 );
 app.use(compression());
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: false, limit: '10kb' }));
 app.use(express.static(path.join(__dirname, '..', 'public'), { maxAge: '7d' }));
+app.use('/uploads', express.static(config.uploadDir, { maxAge: '30d' }));
+
+// Admin dashboard (has its own, larger body parser and CSRF protection).
+app.use('/admin', adminRoutes);
+
+app.use(express.urlencoded({ extended: false, limit: '10kb' }));
 
 // "/" -> the visitor's language: saved choice, else browser language, else Swahili.
 app.get('/', (req, res) => {

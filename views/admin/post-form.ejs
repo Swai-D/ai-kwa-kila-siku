@@ -1,0 +1,131 @@
+<%
+  const isNew = !form.id;
+  const action = isNew ? '/admin/posts' : '/admin/posts/' + form.id;
+  const langs = [['sw', 'Kiswahili'], ['en', 'English']];
+%>
+<%- include('partials/top', { title: isNew ? 'New post' : 'Edit post', actions: '<a href="/admin/posts" class="btn btn-light"><i class="mdi mdi-arrow-left me-1"></i> All posts</a>', styles: ['/admin-assets/libs/select2/css/select2.min.css'] }) %>
+
+                        <% if (errors.length) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Could not save:</strong>
+                            <ul class="mb-0 mt-1"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+                        </div>
+                        <% } %>
+
+                        <form method="post" action="<%= action %>" id="post-form" novalidate>
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                            <input type="hidden" name="cover_image" id="cover-image-input" value="<%= form.cover_image %>" />
+
+                            <div class="row">
+                                <div class="col-xl-9">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <ul class="nav nav-tabs nav-tabs-custom mb-3" role="tablist">
+                                                <% langs.forEach(function (l, i) { %>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link <%= i === 0 ? 'active' : '' %>" type="button" data-bs-toggle="tab" data-bs-target="#tab-<%= l[0] %>" role="tab">
+                                                        <%= l[1] %> <span class="badge bg-<%= form[l[0]].title ? 'success' : 'secondary' %>-subtle text-<%= form[l[0]].title ? 'success' : 'secondary' %> ms-1 js-lang-badge" data-lang="<%= l[0] %>"><%= form[l[0]].title ? 'ready' : 'empty' %></span>
+                                                    </button>
+                                                </li>
+                                                <% }); %>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <% langs.forEach(function (l, i) { const k = l[0]; const t = form[k]; %>
+                                                <div class="tab-pane <%= i === 0 ? 'active show' : '' %>" id="tab-<%= k %>" role="tabpanel">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="<%= k %>_title">Title (<%= l[1] %>)</label>
+                                                        <input type="text" class="form-control js-title" id="<%= k %>_title" name="<%= k %>_title" maxlength="200" value="<%= t.title %>" data-lang="<%= k %>" />
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="<%= k %>_slug">Link slug</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">/<%= k %>/post/</span>
+                                                            <input type="text" class="form-control js-slug" id="<%= k %>_slug" name="<%= k %>_slug" maxlength="100" value="<%= t.slug %>" data-lang="<%= k %>" placeholder="auto from title" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="<%= k %>_excerpt">Short summary</label>
+                                                        <textarea class="form-control" id="<%= k %>_excerpt" name="<%= k %>_excerpt" rows="2" maxlength="400"><%= t.excerpt %></textarea>
+                                                        <div class="form-text">Shown under the title and used for search engines.</div>
+                                                    </div>
+                                                    <div class="mb-0">
+                                                        <label class="form-label" for="<%= k %>_body">Article</label>
+                                                        <textarea class="js-editor" id="<%= k %>_body" name="<%= k %>_body"><%= t.body %></textarea>
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                            </div>
+                                            <div class="form-text mt-3">Fill one or both languages. A language without a title is not published, and visitors only see posts in the language they are reading.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <div class="card">
+                                        <div class="card-header"><h5 class="card-title mb-0">Publish</h5></div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="post-status">Status</label>
+                                                <select class="form-select" id="post-status" name="status">
+                                                    <option value="draft" <%= form.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                                                    <option value="published" <%= form.status === 'published' ? 'selected' : '' %>>Published</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="publish_at">Publish time (Dar es Salaam)</label>
+                                                <input type="datetime-local" class="form-control" id="publish_at" name="publish_at" value="<%= form.publish_at %>" />
+                                                <div class="form-text">Published + empty = goes live now. Published + a future time = scheduled.</div>
+                                            </div>
+                                            <div class="d-grid gap-2">
+                                                <button type="submit" class="btn btn-primary"><i class="mdi mdi-content-save me-1"></i> Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-header"><h5 class="card-title mb-0">Organise</h5></div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="category_id">Category</label>
+                                                <select class="form-select" id="category_id" name="category_id">
+                                                    <option value="">— None —</option>
+                                                    <% categories.forEach(function (c) { %><option value="<%= c.id %>" <%= String(form.category_id) === String(c.id) ? 'selected' : '' %>><%= c.name_en %> / <%= c.name_sw %></option><% }); %>
+                                                </select>
+                                            </div>
+                                            <div class="mb-0">
+                                                <label class="form-label" for="tags">Tags</label>
+                                                <select class="form-select" id="tags" name="tags" multiple>
+                                                    <% allTags.forEach(function (tg) { %><option value="<%= tg.id %>" <%= form.tags.includes(tg.id) ? 'selected' : '' %>><%= tg.name_en %><%= tg.name_en !== tg.name_sw ? ' / ' + tg.name_sw : '' %></option><% }); %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-header"><h5 class="card-title mb-0">Cover image</h5></div>
+                                        <div class="card-body">
+                                            <div id="cover-preview" class="mb-3 <%= form.cover_image ? '' : 'd-none' %>">
+                                                <img src="<%= form.cover_image %>" alt="" class="img-fluid rounded" id="cover-preview-img" />
+                                                <button type="button" class="btn btn-sm btn-link text-danger px-0 mt-1" id="cover-remove">Remove image</button>
+                                            </div>
+                                            <input type="file" class="form-control" id="cover-file" accept="image/jpeg,image/png,image/webp,image/gif" />
+                                            <div class="form-text" id="cover-status">JPG, PNG, WebP or GIF, up to 5 MB.</div>
+                                        </div>
+                                    </div>
+
+                                    <% if (!isNew) { %>
+                                    <div class="card border-danger">
+                                        <div class="card-body">
+                                            <button type="button" class="btn btn-outline-danger w-100" id="delete-post-btn" data-title="<%= form.sw.title || form.en.title %>"><i class="mdi mdi-delete me-1"></i> Delete post</button>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </form>
+                        <% if (!isNew) { %>
+                        <form method="post" action="/admin/posts/<%= form.id %>/delete" id="delete-post-form" class="d-none">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                        </form>
+                        <% } %>
+<%- include('partials/bottom', { scripts: ['/admin-assets/libs/select2/js/select2.min.js', '/admin-assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js', '/admin-assets/js/post-form.js'] }) %>

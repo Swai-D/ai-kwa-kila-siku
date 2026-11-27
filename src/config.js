@@ -5,6 +5,7 @@ module.exports = {
   port: Number(process.env.PORT) || 3000,
   siteUrl: (process.env.SITE_URL || 'http://localhost:3000').replace(/\/$/, ''),
   dbPath: path.resolve(process.env.DB_PATH || 'data/blog.db'),
+  uploadDir: path.resolve(process.env.UPLOAD_DIR || 'uploads'),
   languages: ['sw', 'en'],
   defaultLang: 'sw',
   postsPerPage: 5,

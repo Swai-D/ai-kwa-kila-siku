@@ -1,0 +1,60 @@
+<%- include('partials/top', { title: 'Dashboard' }) %>
+                        <div class="row">
+                            <% [
+                                ['Published', stats.published, 'check-circle', 'success'],
+                                ['Scheduled', stats.scheduled, 'clock', 'info'],
+                                ['Drafts', stats.drafts, 'edit-3', 'warning'],
+                                ['Total views', stats.views, 'eye', 'primary'],
+                                ['Subscribers', stats.subscribers, 'mail', 'secondary']
+                            ].forEach(function (c) { %>
+                            <div class="col-xl col-md-4 col-sm-6">
+                                <div class="card card-h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1">
+                                                <span class="text-muted mb-3 lh-1 d-block text-truncate"><%= c[0] %></span>
+                                                <h4 class="mb-0"><%= c[1] %></h4>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <span class="avatar-title bg-<%= c[3] %>-subtle text-<%= c[3] %> rounded-circle p-3 d-inline-flex"><i data-feather="<%= c[2] %>"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header d-flex align-items-center justify-content-between">
+                                        <h5 class="card-title mb-0">Recent posts</h5>
+                                        <a href="/admin/posts/new" class="btn btn-primary btn-sm"><i class="mdi mdi-plus me-1"></i> New post</a>
+                                    </div>
+                                    <div class="card-body">
+                                        <% if (!recent.length) { %>
+                                        <p class="text-muted mb-0">No posts yet. <a href="/admin/posts/new">Write your first one.</a></p>
+                                        <% } else { %>
+                                        <div class="table-responsive">
+                                            <table class="table align-middle table-nowrap mb-0">
+                                                <thead><tr><th>Title</th><th>Languages</th><th>Status</th><th>Publish time (EAT)</th><th class="text-end">Views</th></tr></thead>
+                                                <tbody>
+                                                <% recent.forEach(function (p) { %>
+                                                    <tr>
+                                                        <td><a href="/admin/posts/<%= p.id %>/edit" class="fw-medium text-body"><%= p.title_sw || p.title_en %></a></td>
+                                                        <td><% if (p.title_sw) { %><span class="badge bg-primary-subtle text-primary">SW</span> <% } %><% if (p.title_en) { %><span class="badge bg-info-subtle text-info">EN</span><% } %></td>
+                                                        <td><%- include('partials/status', { state: p.state }) %></td>
+                                                        <td><%= formatEat(p.published_at) %></td>
+                                                        <td class="text-end"><%= p.views %></td>
+                                                    </tr>
+                                                <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+<%- include('partials/bottom') %>
