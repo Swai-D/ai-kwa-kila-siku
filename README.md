@@ -29,6 +29,9 @@ Built on the Dason theme (`public/admin-assets`). English interface.
 - **Posts:** list (search, sort), create, edit, delete. Swahili and English side by side in tabs, each with its own title, link slug, summary and article (CKEditor). Leave a language's title empty and that version is not published.
 - **Publishing:** status Draft / Published. A Published post with a future time is *Scheduled* and goes live by itself. Times are entered in Dar es Salaam time and stored in UTC.
 - **Images:** cover image and in-article images upload to `UPLOAD_DIR` (default `uploads/`, served at `/uploads`). JPG, PNG, WebP, GIF only, 5 MB max.
+- **Categories and tags:** add, rename (name in one or both languages, slug, category description shown in the blog menu), delete with post counts. Deleting a category keeps its posts.
+- **Media library:** upload several images at once, copy URLs, delete. An image used by a post or a setting cannot be deleted (the message says where it is used).
+- **Settings:** blog name, author name and photo, logo, taglines, short About and About page per language, social links and contact email. Empty fields fall back to built-in texts; social icons only show for links you fill in.
 - **Safety:** article HTML is sanitised on save (scripts, event handlers and `javascript:` links are removed).
 
 ## Deploying
@@ -39,7 +42,7 @@ Set `SITE_URL` to your real `https://` address (enables HSTS and secure cookies)
 
 1. Foundation and public blog (done)
 2. Admin dashboard: login, post CRUD with bilingual editor (done)
-3. Categories and tags management, media library, settings
+3. Categories and tags management, media library, settings (done)
 4. Newsletter export, RSS, sitemap, SEO
 5. Scheduling polish, deploy notes
 

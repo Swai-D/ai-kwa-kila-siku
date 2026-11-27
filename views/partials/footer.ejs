@@ -1,9 +1,9 @@
 						<section id="footer">
 							<ul class="icons">
-								<li><a href="<%= site.social.twitter %>" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-								<li><a href="<%= site.social.facebook %>" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-								<li><a href="<%= site.social.instagram %>" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-								<li><a href="<%= site.social.email %>" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+								<% if (site.social.twitter) { %><li><a href="<%= site.social.twitter %>" rel="noopener" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li><% } %>
+								<% if (site.social.facebook) { %><li><a href="<%= site.social.facebook %>" rel="noopener" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li><% } %>
+								<% if (site.social.instagram) { %><li><a href="<%= site.social.instagram %>" rel="noopener" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li><% } %>
+								<% if (site.social.email) { %><li><a href="<%= site.social.email %>" rel="noopener" class="icon solid fa-envelope"><span class="label">Email</span></a></li><% } %>
 							</ul>
 							<p class="copyright">&copy; <%= new Date().getFullYear() %> <%= site.name %>. <%= t('footer.rights') %> <%= t('footer.design') %>: <a href="https://html5up.net">HTML5 UP</a>.</p>
 						</section>

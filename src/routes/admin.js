@@ -4,9 +4,10 @@ const crypto = require('crypto');
 const express = require('express');
 const multer = require('multer');
 const db = require('../db');
-const config = require('../config');
+const settings = require('../settings');
 const auth = require('../admin/auth');
 const { slugify, nowSql, eatInputToUtc, utcToEatInput, formatEat, cleanHtml } = require('../admin/util');
+const config = require('../config');
 
 const router = express.Router();
 const LANGS = ['sw', 'en'];
@@ -16,7 +17,7 @@ router.use(express.urlencoded({ extended: false, limit: '2mb' }));
 router.use((req, res, next) => {
   res.set('Cache-Control', 'no-store');
   res.locals.formatEat = formatEat;
-  res.locals.siteName = config.site.name;
+  res.locals.siteName = settings.site().name;
   res.locals.nav = '';
   res.locals.flash = req.query.ok || null;
   next();
@@ -304,6 +305,9 @@ router.post('/media/upload', (req, res) => {
     res.json({ url: `/uploads/${req.file.filename}` });
   });
 });
+
+// --- taxonomy, media library, settings ---
+router.use('/', require('./admin-content'));
 
 // --- admin 404 --------------------------------------------------------------
 router.use((req, res) => res.status(404).render('admin/404', { nav: '' }));

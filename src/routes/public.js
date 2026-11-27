@@ -2,19 +2,21 @@ const express = require('express');
 const config = require('../config');
 const q = require('../queries');
 const { translate, formatDate, readingMinutes } = require('../i18n');
+const settings = require('../settings');
 
 const router = express.Router({ mergeParams: true });
 
 const other = (lang) => (lang === 'sw' ? 'en' : 'sw');
 
 function setCommon(req, res, lang) {
+  const t = (key) => settings.textOverride(lang, key) || translate(lang, key);
   res.cookie('lang', lang, { maxAge: 365 * 24 * 3600 * 1000, sameSite: 'lax', httpOnly: true });
   Object.assign(res.locals, {
     lang,
     otherLang: other(lang),
-    site: config.site,
+    site: settings.site(),
     siteUrl: config.siteUrl,
-    t: (key) => translate(lang, key),
+    t,
     fmtDate: (iso) => formatDate(lang, iso),
     isoDate: (iso) => iso.slice(0, 10),
     readingMinutes,
@@ -24,7 +26,7 @@ function setCommon(req, res, lang) {
     altPaths: { sw: `/sw${req.path === '/' ? '/' : req.path}`, en: `/en${req.path === '/' ? '/' : req.path}` },
     canonicalPath: `/${lang}${req.path === '/' ? '/' : req.path}`,
     pageTitle: null,
-    metaDescription: translate(lang, 'tagline'),
+    metaDescription: t('tagline'),
     bodyClass: '',
     withSidebar: true,
     ogImage: null,
@@ -73,7 +75,7 @@ router.get('/post/:slug', (req, res) => {
     post,
     tags: q.postTags(post.id, lang),
     pageTitle: post.title,
-    metaDescription: post.excerpt || translate(lang, 'tagline'),
+    metaDescription: post.excerpt || res.locals.t('tagline'),
     canonicalPath: `/${lang}/post/${post.slug}`,
     ogImage: post.cover_image,
     ogType: 'article',
@@ -126,7 +128,7 @@ router.get('/search', (req, res) => {
 });
 
 router.get('/about', (req, res) => {
-  res.render('about', { pageTitle: translate(req.params.lang, 'about.title') });
+  res.render('about', { pageTitle: res.locals.t('about.title') });
 });
 
 router.post('/subscribe', (req, res) => {

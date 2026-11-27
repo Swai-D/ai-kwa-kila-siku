@@ -1,0 +1,38 @@
+<%- include('partials/top', { title: 'Media' }) %>
+                        <% if (error) { %><div class="alert alert-danger" role="alert"><%= error %></div><% } %>
+                        <div class="card">
+                            <div class="card-body">
+                                <label class="form-label" for="media-files">Upload images</label>
+                                <input type="file" class="form-control" id="media-files" accept="image/jpeg,image/png,image/webp,image/gif" multiple />
+                                <div class="form-text" id="media-status">JPG, PNG, WebP or GIF, up to 5 MB each.</div>
+                            </div>
+                        </div>
+                        <% if (!items.length) { %>
+                        <p class="text-muted">No images yet.</p>
+                        <% } else { %>
+                        <div class="row">
+                            <% items.forEach(function (m) { %>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                                <div class="card">
+                                    <% if (m.missing) { %>
+                                    <div class="media-thumb d-flex align-items-center justify-content-center text-muted">File missing</div>
+                                    <% } else { %>
+                                    <a href="<%= m.url %>" target="_blank" rel="noopener"><img src="<%= m.url %>" alt="" class="media-thumb" loading="lazy" /></a>
+                                    <% } %>
+                                    <div class="card-body p-2">
+                                        <div class="text-truncate font-size-13" title="<%= m.original_name %>"><%= m.original_name %></div>
+                                        <div class="text-muted font-size-12 mb-2"><%= m.kb %> KB · <%= formatEat(m.created_at).slice(0, 10) %></div>
+                                        <div class="d-flex gap-1">
+                                            <button type="button" class="btn btn-sm btn-soft-primary flex-grow-1 js-copy-url" data-url="<%= m.url %>">Copy URL</button>
+                                            <form method="post" action="/admin/media/<%= m.id %>/delete" class="js-confirm-delete" data-what="image" data-title="<%= m.original_name %>" data-note="It cannot be deleted while a post or setting uses it.">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                                <button type="submit" class="btn btn-sm btn-soft-danger" title="Delete"><i class="mdi mdi-delete"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                        </div>
+                        <% } %>
+<%- include('partials/bottom', { scripts: ['/admin-assets/js/admin-editor.js', '/admin-assets/js/media.js'] }) %>

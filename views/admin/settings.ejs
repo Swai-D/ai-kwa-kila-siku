@@ -1,0 +1,98 @@
+<%
+  const langs = [['sw', 'Kiswahili'], ['en', 'English']];
+%>
+<%- include('partials/top', { title: 'Settings', styles: [] }) %>
+                        <% if (errors.length) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Could not save:</strong>
+                            <ul class="mb-0 mt-1"><% errors.forEach(function (e) { %><li><%= e %></li><% }); %></ul>
+                        </div>
+                        <% } %>
+                        <form method="post" action="/admin/settings" id="settings-form" novalidate>
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                            <div class="row">
+                                <div class="col-xl-8">
+                                    <div class="card">
+                                        <div class="card-header"><h5 class="card-title mb-0">Blog identity</h5></div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label" for="site_name">Blog name</label>
+                                                    <input type="text" class="form-control" id="site_name" name="site_name" maxlength="60" value="<%= form.site_name %>" />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label" for="author_name">Author name</label>
+                                                    <input type="text" class="form-control" id="author_name" name="author_name" maxlength="60" value="<%= form.author_name %>" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <% [['author_avatar', 'Author photo', form.author_avatar], ['logo', 'Logo (sidebar)', form.logo]].forEach(function (f) { %>
+                                                <div class="col-md-6 mb-3 js-image-field">
+                                                    <label class="form-label"><%= f[1] %></label>
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <img src="<%= f[2] %>" alt="" class="rounded-circle js-image-preview" width="64" height="64" style="object-fit:cover" />
+                                                        <div class="flex-grow-1">
+                                                            <input type="hidden" name="<%= f[0] %>" value="<%= f[2] %>" class="js-image-value" />
+                                                            <input type="file" class="form-control form-control-sm js-image-file" accept="image/jpeg,image/png,image/webp,image/gif" />
+                                                            <div class="form-text js-image-status">Square images look best.</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-header"><h5 class="card-title mb-0">Texts on the blog</h5></div>
+                                        <div class="card-body">
+                                            <p class="text-muted font-size-13">Leave a field empty to use the built-in text.</p>
+                                            <ul class="nav nav-tabs nav-tabs-custom mb-3" role="tablist">
+                                                <% langs.forEach(function (l, i) { %>
+                                                <li class="nav-item" role="presentation"><button class="nav-link <%= i === 0 ? 'active' : '' %>" type="button" data-bs-toggle="tab" data-bs-target="#s-<%= l[0] %>" role="tab"><%= l[1] %></button></li>
+                                                <% }); %>
+                                            </ul>
+                                            <div class="tab-content">
+                                                <% langs.forEach(function (l, i) { const k = l[0]; %>
+                                                <div class="tab-pane <%= i === 0 ? 'active show' : '' %>" id="s-<%= k %>" role="tabpanel">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="tagline_<%= k %>">Tagline (under the blog name)</label>
+                                                        <input type="text" class="form-control" id="tagline_<%= k %>" name="tagline_<%= k %>" maxlength="200" value="<%= form['tagline_' + k] %>" />
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="about_<%= k %>">Short About (sidebar)</label>
+                                                        <textarea class="form-control" id="about_<%= k %>" name="about_<%= k %>" rows="3" maxlength="500"><%= form['about_' + k] %></textarea>
+                                                    </div>
+                                                    <div class="mb-0">
+                                                        <label class="form-label" for="about_page_<%= k %>">About page</label>
+                                                        <textarea class="js-editor" id="about_page_<%= k %>" name="about_page_<%= k %>"><%= form['about_page_' + k] %></textarea>
+                                                    </div>
+                                                </div>
+                                                <% }); %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-4">
+                                    <div class="card">
+                                        <div class="card-header"><h5 class="card-title mb-0">Links</h5></div>
+                                        <div class="card-body">
+                                            <% [['social_twitter', 'Twitter / X', 'https://x.com/...'], ['social_facebook', 'Facebook', 'https://facebook.com/...'], ['social_instagram', 'Instagram', 'https://instagram.com/...']].forEach(function (f) { %>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="<%= f[0] %>"><%= f[1] %></label>
+                                                <input type="url" class="form-control" id="<%= f[0] %>" name="<%= f[0] %>" maxlength="300" placeholder="<%= f[2] %>" value="<%= form[f[0]] %>" />
+                                            </div>
+                                            <% }); %>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="social_email">Contact email</label>
+                                                <input type="email" class="form-control" id="social_email" name="social_email" maxlength="254" value="<%= form.social_email %>" />
+                                                <div class="form-text">Icons only appear on the blog for links you fill in.</div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100"><i class="mdi mdi-content-save me-1"></i> Save settings</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+<%- include('partials/bottom', { scripts: ['/admin-assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js', '/admin-assets/js/admin-editor.js', '/admin-assets/js/settings.js'] }) %>
