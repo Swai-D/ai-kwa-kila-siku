@@ -1,0 +1,37 @@
+<%- include('partials/top', { title: 'Posts', actions: '<a href="/admin/posts/new" class="btn btn-primary"><i class="mdi mdi-plus me-1"></i> New post</a>', styles: ['/admin-assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css'] }) %>
+                        <div class="card">
+                            <div class="card-body">
+                                <% if (!posts.length) { %>
+                                <p class="text-muted mb-0">No posts yet. <a href="/admin/posts/new">Write your first one.</a></p>
+                                <% } else { %>
+                                <table id="posts-table" class="table table-bordered dt-responsive nowrap w-100 align-middle">
+                                    <thead>
+                                        <tr><th>Title</th><th>Languages</th><th>Category</th><th>Status</th><th>Publish time (EAT)</th><th>Views</th><th class="no-sort">Actions</th></tr>
+                                    </thead>
+                                    <tbody>
+                                    <% posts.forEach(function (p) {
+                                        const viewSlug = p.slug_sw ? '/sw/post/' + p.slug_sw : '/en/post/' + p.slug_en; %>
+                                        <tr>
+                                            <td><a href="/admin/posts/<%= p.id %>/edit" class="fw-medium text-body"><%= p.title_sw || p.title_en %></a>
+                                                <% if (p.title_sw && p.title_en) { %><div class="text-muted font-size-12"><%= p.title_en %></div><% } %></td>
+                                            <td><% if (p.title_sw) { %><span class="badge bg-primary-subtle text-primary">SW</span> <% } %><% if (p.title_en) { %><span class="badge bg-info-subtle text-info">EN</span><% } %></td>
+                                            <td><%= p.category || '—' %></td>
+                                            <td><%- include('partials/status', { state: p.state }) %></td>
+                                            <td data-order="<%= p.published_at || '' %>"><%= formatEat(p.published_at) %></td>
+                                            <td><%= p.views %></td>
+                                            <td>
+                                                <a href="/admin/posts/<%= p.id %>/edit" class="btn btn-sm btn-soft-primary" title="Edit"><i class="mdi mdi-pencil"></i></a>
+                                                <% if (p.state === 'published') { %><a href="<%= viewSlug %>" target="_blank" rel="noopener" class="btn btn-sm btn-soft-secondary" title="View on blog"><i class="mdi mdi-open-in-new"></i></a><% } %>
+                                                <form method="post" action="/admin/posts/<%= p.id %>/delete" class="d-inline js-confirm-delete" data-title="<%= p.title_sw || p.title_en %>">
+                                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                                    <button type="submit" class="btn btn-sm btn-soft-danger" title="Delete"><i class="mdi mdi-delete"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                    </tbody>
+                                </table>
+                                <% } %>
+                            </div>
+                        </div>
+<%- include('partials/bottom', { scripts: ['/admin-assets/libs/datatables.net/js/jquery.dataTables.min.js', '/admin-assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js'] }) %>

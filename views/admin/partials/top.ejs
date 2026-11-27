@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title><%= title %> | <%= siteName %> Admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex,nofollow" />
+        <meta name="csrf-token" content="<%= csrfToken %>" />
+        <link rel="shortcut icon" href="/admin-assets/images/favicon.ico">
+        <link rel="stylesheet" href="/admin-assets/css/preloader.min.css" type="text/css" />
+        <link href="/admin-assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <link href="/admin-assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="/admin-assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+        <link href="/admin-assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <% if (typeof styles !== 'undefined') styles.forEach(function (s) { %><link href="<%= s %>" rel="stylesheet" type="text/css" />
+        <% }); %>
+        <link href="/admin-assets/css/admin.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body data-topbar="dark">
+        <div id="layout-wrapper">
+
+            <header id="page-topbar">
+                <div class="navbar-header">
+                    <div class="d-flex">
+                        <div class="navbar-brand-box">
+                            <a href="/admin" class="logo logo-dark">
+                                <span class="logo-sm"><img src="/admin-assets/images/logo-sm.svg" alt="" height="30"></span>
+                                <span class="logo-lg"><img src="/admin-assets/images/logo-sm.svg" alt="" height="24"> <span class="logo-txt">A.I Kwa Kila Siku</span></span>
+                            </a>
+                            <a href="/admin" class="logo logo-light">
+                                <span class="logo-sm"><img src="/admin-assets/images/logo-sm.svg" alt="" height="30"></span>
+                                <span class="logo-lg"><img src="/admin-assets/images/logo-sm.svg" alt="" height="24"> <span class="logo-txt">A.I Kwa Kila Siku</span></span>
+                            </a>
+                        </div>
+                        <button type="button" class="btn btn-sm px-3 font-size-16 header-item" id="vertical-menu-btn">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <div class="d-flex">
+                        <a href="/sw/" target="_blank" rel="noopener" class="btn header-item d-none d-sm-inline-flex align-items-center" title="Open the public blog">
+                            <i data-feather="external-link" class="icon-sm me-1"></i> View blog
+                        </a>
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item bg-light-subtle border-start border-end" id="page-header-user-dropdown"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="rounded-circle header-profile-user" src="/admin-assets/images/users/avatar-1.jpg" alt="">
+                                <span class="d-none d-xl-inline-block ms-1 fw-medium"><%= admin.name %></span>
+                                <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <span class="dropdown-item-text text-muted font-size-12"><%= admin.email %></span>
+                                <div class="dropdown-divider"></div>
+                                <form method="post" action="/admin/logout" class="m-0">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                    <button type="submit" class="dropdown-item"><i class="mdi mdi-logout font-size-16 align-middle me-1"></i> Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="vertical-menu">
+                <div data-simplebar class="h-100">
+                    <div id="sidebar-menu">
+                        <ul class="metismenu list-unstyled" id="side-menu">
+                            <li class="menu-title">Menu</li>
+                            <li>
+                                <a href="/admin" class="<%= nav === 'dashboard' ? 'active' : '' %>">
+                                    <i data-feather="home"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="menu-title">Content</li>
+                            <li>
+                                <a href="/admin/posts" class="<%= nav === 'posts' ? 'active' : '' %>">
+                                    <i data-feather="file-text"></i>
+                                    <span>Posts</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/admin/posts/new">
+                                    <i data-feather="plus-circle"></i>
+                                    <span>New post</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="page-content">
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                    <h4 class="mb-sm-0 font-size-18"><%= title %></h4>
+                                    <% if (typeof actions !== 'undefined') { %><div class="page-title-right"><%- actions %></div><% } %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <% if (flash === 'created' || flash === 'saved' || flash === 'deleted') { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <%= flash === 'created' ? 'Post created.' : flash === 'saved' ? 'Changes saved.' : 'Post deleted.' %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <% } %>
