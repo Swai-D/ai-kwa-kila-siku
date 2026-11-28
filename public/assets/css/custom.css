@@ -16,3 +16,5 @@
 .post img { max-width: 100%; height: auto; }
 .post pre { overflow-x: auto; }
 .stats .icon:before { margin-right: 0.35em; }
+/* Honeypot field for the newsletter form: off-screen, not display:none (bots skip those less often) */
+.hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }

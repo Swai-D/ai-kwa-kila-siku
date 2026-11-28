@@ -24,6 +24,8 @@
 		<meta property="og:url" content="<%= abs(canonicalPath) %>" />
 		<meta property="og:locale" content="<%= lang === 'sw' ? 'sw_TZ' : 'en_GB' %>" />
 		<% if (ogImage) { %><meta property="og:image" content="<%= abs(ogImage) %>" /><% } %>
+		<link rel="alternate" type="application/rss+xml" title="<%= site.name %> (<%= lang.toUpperCase() %>)" href="<%= abs('/' + lang + '/rss.xml') %>" />
+		<% if (jsonLd) { %><script type="application/ld+json"><%- jsonLd %></script><% } %>
 		<link rel="stylesheet" href="/assets/css/main.css" />
 		<link rel="stylesheet" href="/assets/css/custom.css" />
 	</head>

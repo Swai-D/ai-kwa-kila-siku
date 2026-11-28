@@ -32,7 +32,16 @@ Built on the Dason theme (`public/admin-assets`). English interface.
 - **Categories and tags:** add, rename (name in one or both languages, slug, category description shown in the blog menu), delete with post counts. Deleting a category keeps its posts.
 - **Media library:** upload several images at once, copy URLs, delete. An image used by a post or a setting cannot be deleted (the message says where it is used).
 - **Settings:** blog name, author name and photo, logo, taglines, short About and About page per language, social links and contact email. Empty fields fall back to built-in texts; social icons only show for links you fill in.
+- **Subscribers:** list with counts per language, delete, and CSV export (`/admin/subscribers.csv`, spreadsheet-formula safe).
 - **Safety:** article HTML is sanitised on save (scripts, event handlers and `javascript:` links are removed).
+
+## SEO and sharing
+
+- `/sw/rss.xml` and `/en/rss.xml`: latest 20 posts per language (full content, absolute links), advertised in every page `<head>` and the footer.
+- `/sitemap.xml`: home, About, categories and every public post, with `hreflang` alternates for posts that exist in both languages. Drafts and scheduled posts are never listed. `/robots.txt` points to it and blocks `/admin` and search pages.
+- Post pages carry `BlogPosting` structured data and Open Graph tags.
+- Share buttons on posts: WhatsApp, X, Facebook, copy link.
+- Newsletter form: hidden honeypot field and 5 signups per hour per IP.
 
 ## Deploying
 
@@ -43,7 +52,7 @@ Set `SITE_URL` to your real `https://` address (enables HSTS and secure cookies)
 1. Foundation and public blog (done)
 2. Admin dashboard: login, post CRUD with bilingual editor (done)
 3. Categories and tags management, media library, settings (done)
-4. Newsletter export, RSS, sitemap, SEO
+4. RSS, sitemap, SEO, subscribers export, share buttons (done)
 5. Scheduling polish, deploy notes
 
 ## Credits

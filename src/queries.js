@@ -5,7 +5,7 @@ const config = require('./config');
 const PUBLIC = `p.status = 'published' AND p.published_at <= datetime('now') AND t.lang = @lang`;
 
 const SELECT = `
-  SELECT p.id, p.cover_image, p.published_at, p.views,
+  SELECT p.id, p.cover_image, p.published_at, p.updated_at, p.views,
          t.slug, t.title, t.excerpt, t.body,
          c.slug AS category_slug,
          CASE @lang WHEN 'sw' THEN c.name_sw ELSE c.name_en END AS category_name

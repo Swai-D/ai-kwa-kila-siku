@@ -12,6 +12,14 @@
 							</header>
 							<% if (post.cover_image) { %><span class="image featured"><img src="<%= post.cover_image %>" alt="<%= post.title %>" /></span><% } %>
 							<%- post.body %>
+							<% const pageUrl = siteUrl + canonicalPath, shareText = encodeURIComponent(post.title), shareUrl = encodeURIComponent(pageUrl); %>
+							<h4><%= t('share.title') %></h4>
+							<ul class="actions small">
+								<li><a class="button small icon brands fa-whatsapp" href="https://wa.me/?text=<%= shareText %>%20<%= shareUrl %>" target="_blank" rel="noopener">WhatsApp</a></li>
+								<li><a class="button small icon brands fa-twitter" href="https://twitter.com/intent/tweet?text=<%= shareText %>&amp;url=<%= shareUrl %>" target="_blank" rel="noopener">X</a></li>
+								<li><a class="button small icon brands fa-facebook-f" href="https://www.facebook.com/sharer/sharer.php?u=<%= shareUrl %>" target="_blank" rel="noopener">Facebook</a></li>
+								<li><button type="button" class="button small icon solid fa-link js-copy-link" data-url="<%= pageUrl %>" data-done="<%= t('share.copied') %>"><%= t('share.copy') %></button></li>
+							</ul>
 							<% if (!altPaths[otherLang]) { %><p><em><%= t('post.not_translated') %></em></p><% } %>
 							<footer>
 								<ul class="stats">

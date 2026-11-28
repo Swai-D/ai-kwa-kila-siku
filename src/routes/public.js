@@ -30,6 +30,7 @@ function setCommon(req, res, lang) {
     bodyClass: '',
     withSidebar: true,
     ogImage: null,
+    jsonLd: null,
     ogType: 'website',
     flash: req.query.sub || null,
   });
@@ -79,6 +80,19 @@ router.get('/post/:slug', (req, res) => {
     canonicalPath: `/${lang}/post/${post.slug}`,
     ogImage: post.cover_image,
     ogType: 'article',
+    jsonLd: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt || undefined,
+      inLanguage: lang,
+      datePublished: `${post.published_at.replace(' ', 'T')}Z`,
+      dateModified: `${post.updated_at.replace(' ', 'T')}Z`,
+      mainEntityOfPage: `${config.siteUrl}/${lang}/post/${post.slug}`,
+      image: post.cover_image ? [config.siteUrl + post.cover_image] : undefined,
+      author: { '@type': 'Person', name: res.locals.site.authorName },
+      publisher: { '@type': 'Organization', name: res.locals.site.name },
+    }).replace(/</g, '\\u003c'),
     bodyClass: 'single',
     withSidebar: false,
   });
@@ -131,12 +145,65 @@ router.get('/about', (req, res) => {
   res.render('about', { pageTitle: res.locals.t('about.title') });
 });
 
+// Newsletter signup: honeypot field + 5 signups per hour per IP.
+const signups = new Map();
+function tooManySignups(ip) {
+  const now = Date.now();
+  const hits = (signups.get(ip) || []).filter((t) => now - t < 3600 * 1000);
+  hits.push(now);
+  signups.set(ip, hits);
+  if (signups.size > 5000) signups.clear();
+  return hits.length > 5;
+}
+
 router.post('/subscribe', (req, res) => {
   const lang = req.params.lang;
   const email = String(req.body.email || '').trim().toLowerCase().slice(0, 254);
   const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // Bots fill the hidden "website" field: answer "ok" and store nothing.
+  if (req.body.website) return res.redirect(303, `/${lang}/?sub=ok#subscribe`);
+  if (valid && tooManySignups(req.ip)) return res.redirect(303, `/${lang}/?sub=slow#subscribe`);
   if (valid) q.addSubscriber(email, lang);
   res.redirect(303, `/${lang}/?sub=${valid ? 'ok' : 'invalid'}#subscribe`);
+});
+
+// --- RSS feed ----------------------------------------------------------------
+const xmlEsc = (s) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const absolutize = (html) => html.replace(/(src|href)="\/(?!\/)/g, `$1="${config.siteUrl}/`);
+const rfc822 = (sql) => new Date(sql.replace(' ', 'T') + 'Z').toUTCString();
+
+router.get('/rss.xml', (req, res) => {
+  const lang = req.params.lang;
+  const posts = q.recent(lang, 20);
+  const feedUrl = `${config.siteUrl}/${lang}/rss.xml`;
+  const items = posts
+    .map((p) => {
+      const link = `${config.siteUrl}/${lang}/post/${p.slug}`;
+      const body = absolutize(p.body).replace(/]]>/g, ']]]]><![CDATA[>');
+      return `    <item>
+      <title>${xmlEsc(p.title)}</title>
+      <link>${xmlEsc(link)}</link>
+      <guid isPermaLink="true">${xmlEsc(link)}</guid>
+      <pubDate>${rfc822(p.published_at)}</pubDate>
+      ${p.category_name ? `<category>${xmlEsc(p.category_name)}</category>` : ''}
+      <description>${xmlEsc(p.excerpt)}</description>
+      <content:encoded><![CDATA[${body}]]></content:encoded>
+    </item>`;
+    })
+    .join('\n');
+  res.type('application/rss+xml').send(`<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>${xmlEsc(res.locals.site.name)}</title>
+    <link>${xmlEsc(`${config.siteUrl}/${lang}/`)}</link>
+    <description>${xmlEsc(res.locals.t('tagline'))}</description>
+    <language>${lang}</language>
+    <atom:link href="${xmlEsc(feedUrl)}" rel="self" type="application/rss+xml"/>
+${items}
+  </channel>
+</rss>
+`);
 });
 
 function renderNotFound(req, res, lang) {

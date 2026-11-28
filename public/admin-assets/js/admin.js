@@ -59,4 +59,12 @@
       columnDefs: [{ targets: 'no-sort', orderable: false }],
     });
   }
+  var subs = document.getElementById('subscribers-table');
+  if (subs && window.jQuery && jQuery.fn.DataTable) {
+    jQuery(subs).DataTable({
+      order: [[2, 'desc']],
+      pageLength: 50,
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+    });
+  }
 })();
